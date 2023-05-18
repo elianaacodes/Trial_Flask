@@ -90,7 +90,7 @@ class Car(db.Model):
     model = db.Column(db.String(75), unique = False, nullable = False)
     year = db.Column(db.Integer,  unique = False, nullable = False)
     color = db.Column(db.String, unique = False, nullable = False)
-    user_id = db.Column(db.String, db.ForeignKey('user.id'), nullable=False, default = '')
+    user_id = db.Column(db.String, db.ForeignKey('user.token'), nullable=False)
     date_created = db.Column(db.DateTime, nullable = False, default = datetime.utcnow)
     
     
