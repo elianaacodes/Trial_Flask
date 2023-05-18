@@ -65,7 +65,7 @@ def update_car(id):
     return render_template('update.html', car=car)
     
 
-@site.route('/delete/<id>', methods=['POST'])
+@site.route('/delete_car/<id>', methods=['POST'])
 def delete_car(id):
     car = Car.query.get(id)
     if car:
