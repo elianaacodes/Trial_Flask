@@ -1,6 +1,6 @@
 
 from flask import Blueprint, jsonify, render_template, request, redirect, url_for
-from models import db, User, Car, car_schema, cars_schema
+from models import db, User, Book, book_schema, books_schema
 from flask_login import current_user
 
 
@@ -14,64 +14,60 @@ def home():
 def profile():
     return render_template('profile.html')
 
-@site.route('/cars')
-def cars():
-    cars = Car.query.all()
-    return render_template('cars.html', cars=cars)
+@site.route('/books')
+def books():
+    books = Book.query.all()
+    return render_template('books.html', books=books)
 
 @site.route('/update')
 def update():
     return render_template('update.html')
 
-@site.route('/create_car', methods=['POST'])
+@site.route('/create_book', methods=['POST'])
 def create_car():
-    vin = request.form['vin']
+    isbn = request.form['isbn']
     year = request.form['year']
-    make = request.form['make']
-    model = request.form['model']
-    color = request.form['color']
+    title = request.form['title']
+    pages = request.form['pages']
+    author = request.form['author']
     user_id = current_user.id
     
-    car = Car(vin = vin, year=year, make=make, model=model, color=color, user_id = user_id )
-    db.session.add(car)
+    book = Book(isbn = isbn, year=year, title=title, pages=pages, author=author, user_id = user_id )
+    db.session.add(book)
     db.session.commit()
     
-    return redirect(url_for('site.cars'))
+    return redirect(url_for('site.books'))
 
 
-@site.route('/update_car/<id>/edit', methods=['POST', 'PUT'])
-def update_car(id):
-    # car = Car.query.get(id)
-    vin = Car.query.filter_by(id=id).first()
-    # form=update_car
-    if request.method == 'POST':
+@site.route('/update_book/<id>/edit', methods=['POST', 'PUT'])
+def update_book(id):
+    book = Book.query.filter_by(id=id).first()
+
+    if request.method in ['POST', 'PUT']:
         print("I printed!")
-        if vin:
-        
-            vin = request.form['vin']
-            year = request.form['year']
-            make = request.form['make']
-            model = request.form['model']
-            color = request.form['color']
-            
-            car = Car(vin ='',  year ='', make='', model='')
-            
-            db.session.update(car)
+        if book:
+            book.isbn = request.form['isbn']
+            book.year = request.form['year']
+            book.title = request.form['title']
+            book.pages = request.form['pages']
+            book.author = request.form['author']
+            book.user_id = current_user.id
+
             db.session.commit()
-            return  redirect(url_for('/site.cars'))
-        return f"Car does not exist."
-        
-    
-    return render_template('update.html', car=car)
+            return redirect(url_for('site.books'))
+        else:
+            return "Book does not exist."
+    return render_template('update.html', book=book)
+
     
 
-@site.route('/delete_car/<id>', methods=['POST'])
-def delete_car(id):
-    car = Car.query.get(id)
-    if car:
-        db.session.delete(car)
+@site.route('/delete_book/<id>', methods=['POST'])
+def delete_book(id):
+    book = Book.query.get(id)
+    if book:
+        db.session.delete(book)
         db.session.commit()
-        return redirect(url_for('site.cars'))
+        return redirect(url_for('site.books'))
     
     
-    return redirect(url_for('site.cars'))
+    return redirect(url_for('site.books'))

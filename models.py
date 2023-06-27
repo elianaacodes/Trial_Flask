@@ -84,32 +84,32 @@ contact_schema = ContactSchema()
 contacts_schema = ContactSchema(many=True)
 
 
-class Car(db.Model):
-    vin = db.Column(db.String(17), primary_key=True)
-    make = db.Column(db.String(75), unique = False, nullable = False)
-    model = db.Column(db.String(75), unique = False, nullable = False)
-    year = db.Column(db.Integer,  unique = False, nullable = False)
-    color = db.Column(db.String, unique = False, nullable = False)
+class Book(db.Model):
+    isbn = db.Column(db.String(17), primary_key=True)
+    year = db.Column(db.Integer, unique = False, nullable = False)
+    title = db.Column(db.String(75), unique = False, nullable = False)
+    pages = db.Column(db.Integer,  unique = False, nullable = False)
+    author = db.Column(db.String, unique = False, nullable = False)
     user_id = db.Column(db.String, db.ForeignKey('user.token'), nullable=False)
     date_created = db.Column(db.DateTime, nullable = False, default = datetime.utcnow)
     
     
-    def __init__(self,  vin, make, model, year, color,  user_id):
-        self.vin = vin
-        self.make = make
-        self.model = model
+    def __init__(self,  isbn, year, title, pages, author,  user_id):
+        self.isbn = isbn
         self.year = year
-        self.color = color
+        self.title = title
+        self.pages = pages
+        self.author = author 
         self.user_id = user_id
     
     
     def __repr__(self):
-        return f'Car {self.year} {self.make} {self.model} has been added to the database'
+        return f'{self.title} has been added to the library'
     
  
-class CarSchema(ma.Schema):
+class BookSchema(ma.Schema):
     class Meta:
-        fields = ['vin', 'make', 'model', 'year', 'color', 'user_id']
+        fields = ['isbn', 'year', 'title', 'pages', 'author', 'user_id']
 
-car_schema = CarSchema()
-cars_schema = CarSchema(many=True)
+book_schema = BookSchema()
+books_schema = BookSchema(many=True)
